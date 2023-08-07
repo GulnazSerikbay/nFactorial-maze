@@ -13,6 +13,8 @@ import ImageWriter
 from classes import Player, Tile, Button
 from makeMaze import maze
 
+PLAYER_MOVING_SPEED = 5
+
 #the class app will be used to store variables that multiple classes and 
 #functions must access
 
@@ -28,72 +30,41 @@ class App(object):
 
 #processes key events to move sprite with arrow keys, a helper function
 #to condense keyPressed
-def arrowKeys(event, app):
+def arrowKeys(pressed_keys, app):
     #storing arrow keys' values for ease of access later
-    keys = {"Up": 1073741906, "Down": 1073741905, "Right": 1073741903, 
-            "Left": 1073741904}
-    
+    # keys = {"Up": 1073741906, "Down": 1073741905, "Right": 1073741903, 
+    #         "Left": 1073741904}
+
     #changing player sprite's y coordinate according to arrow key presses
     #and loading correct directional image
-    if event.key == keys["Down"]:
-        
-        #toggling walk checking variable to move back and forth between
-        #walking images for animation
-        app.walk = not(app.walk)
-        
-        move = app.player.makeMove(0, 50, app)
-        
-        #running walking animation in correct direction
-        app.player.walk(app, "Down")
-        
-        #storing direction to load correct image when stopped
-        app.stop = "Down"
-        
-        #try scrolling if successfully moved 
-        if move == True:
+    if pressed_keys[pygame.K_DOWN]:
+        if makePlayerMove(app, 0, PLAYER_MOVING_SPEED, "Down"):
             app.tile.scrollDown(app, app.scroll)
-    
-    elif event.key == keys["Up"]:
-        app.walk = not(app.walk)
-        
-        move = app.player.makeMove(0, -50, app)
-        
-        app.player.walk(app, "Up")
-        app.stop = "Up"
-        
-        if move == True:
+    elif pressed_keys[pygame.K_UP]:
+        if makePlayerMove(app, 0, -PLAYER_MOVING_SPEED, "Up"):
             app.tile.scrollUp(app, app.scroll)
-        
-    #changing player sprite's x coordinate according to arrow key presses
-    #and loading correct directional image
-    elif event.key == keys["Right"]:
-        
-        #toggling walk checking variable to move back and forth between
-        #walking images for animation
-        app.walk = not(app.walk)
-        
-        move = app.player.makeMove(50, 0, app)
-        
-        #running walking animation in correct direction
-        app.player.walk(app, "Right")
-        
-        #storing direction to load correct image when stopped
-        app.stop = "Right"
-        
-        #try scrolling if successfully moved 
-        if move == True:
+    elif pressed_keys[pygame.K_RIGHT]:
+        if makePlayerMove(app, PLAYER_MOVING_SPEED, 0, "Right"):
             app.tile.scrollRight(app, app.scroll)
-        
-    elif event.key == keys["Left"]:
-        app.walk = not(app.walk)
-        
-        move = app.player.makeMove(-50, 0, app)
-        
-        app.player.walk(app, "Left")
-        app.stop = "Left"
-        
-        if move == True:
+    elif pressed_keys[pygame.K_LEFT]:
+        if makePlayerMove(app, -PLAYER_MOVING_SPEED, 0, "Left"):
             app.tile.scrollLeft(app, app.scroll)
+
+
+def makePlayerMove(app, dx, dy, direction):
+    #toggling walk checking variable to move back and forth between
+    #walking images for animation
+    app.walk = not app.walk
+
+    result = app.player.makeMove(dx, dy, app)
+
+    #running walking animation in correct direction
+    app.player.walk(app, direction)
+
+    #storing direction to load correct image when stopped
+    app.stop = direction
+
+    return result
         
         
 #keyPressed handles the game's reaction to a user's key presses
@@ -107,7 +78,7 @@ def arrowKeys(event, app):
 def keyPressed(event, app):
     
     #process arrow keys
-    arrowKeys(event, app)
+    # arrowKeys(event, app)
     
     #toggle map view with v key
     if event.key == ord("v"):
@@ -328,7 +299,9 @@ def mainGame(app):
         else:
             #rendering player sprite onto screen 
             app.screen.blit(app.player.surf, (app.player.x, app.player.y))
-        
+
+        arrowKeys(pygame.key.get_pressed(), app)
+
         for event in pygame.event.get():
             
             #accounting for window close attempts
