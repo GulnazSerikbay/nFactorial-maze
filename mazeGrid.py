@@ -14,11 +14,11 @@ def remainingBorders(pic, size):
     
     for w in range(width):
         #draws bottom border
-        drawLines(pic, w, width - size, size, [101, 154, 173])
+        drawLines(pic, w, width - size, size, [0xf9, 0x61, 0xc6])
         
     for h in range(height):
         #draws right border 
-        drawOtherLines(pic, height - size, h, size, [101, 154, 173])
+        drawOtherLines(pic, height - size, h, size, [0xf9, 0x61, 0xc6])
 
 #draws a vertical line of given height, cols, from given x,y coordinate
 #in a given colour
@@ -51,13 +51,13 @@ def drawGrid():
     #drawing horizontal lines at correct intervals
     for w in range(3, height, 20):
         for h in range(width):
-            drawOtherLines(base, w - 3, h, 3, [101, 154, 173])
+            drawOtherLines(base, w - 3, h, 3, [0xf9, 0x61, 0xc6])
             drawOtherLines(base, w, h, 2, [38, 62, 70])
             
     #drawing vertical lines at correct intervals
     for h in range(3, width, 20):
         for w in range(height):
-            drawLines(base, w, h - 3, 3, [101, 154, 173])
+            drawLines(base, w, h - 3, 3, [0xf9, 0x61, 0xc6])
     
     remainingBorders(base, 5)
     
@@ -79,13 +79,13 @@ def drawGrid2():
     #drawing vertical lines and shadows at correct intervals
     for w in range(3, width, 25):
         for h in range(height):
-            drawOtherLines(base, w - 3, h, 3, [101, 154, 173])
+            drawOtherLines(base, w - 3, h, 3, [0xf9, 0x61, 0xc6])
             drawOtherLines(base, w, h, 2, [38, 62, 70])
     
     #drawing horizontal lines at correct intervals 
     for h in range(3, height, 25):
         for w in range(width):
-            drawLines(base, w, h - 3, 3, [101, 154, 173])
+            drawLines(base, w, h - 3, 3, [0xf9, 0x61, 0xc6])
     
     remainingBorders(base, 5)
     ImageWriter.savePicture(base, "main maze/grid made.png")

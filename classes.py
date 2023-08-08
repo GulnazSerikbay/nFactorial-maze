@@ -29,7 +29,7 @@ def touchingWall(rect, app):
             currentColour = app.screen.get_at((w, h))
             
             #only detecting collisions with actual wall colour, not shadows
-            if isCloseColor(currentColour, [101, 154, 173], 30) == True:
+            if isCloseColor(currentColour, [0xf9, 0x61, 0xc6], 30) == True:
                 return True
             
     return False

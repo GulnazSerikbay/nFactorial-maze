@@ -47,7 +47,7 @@ def oneHorizontalMargin(pic, start, end, step, h):
         colour = ImageWriter.getColor(pic, w, h)
         
         #full gap found when pixel is no longer white, and can stop check
-        if isCloseColor(colour, [101, 154, 173], 50) == True:
+        if isCloseColor(colour, [0xf9, 0x61, 0xc6], 50) == True:
             margin = w
             break
     
@@ -91,7 +91,7 @@ def oneVerticalMargin(pic, start, end, step, w):
         colour = ImageWriter.getColor(pic, w, h)
         
         #full gap found when pixel is no longer white, and can stop check
-        if isCloseColor(colour, [101, 154, 173], 50) == True:
+        if isCloseColor(colour, [0xf9, 0x61, 0xc6], 50) == True:
             margin = h
             break
     
@@ -164,7 +164,7 @@ def findHorizontalWhiteBounds(pic, x0, x1, h):
                 
         #finding location of next coloured pixel which indicates end of 
         #white segment
-        elif (isCloseColor(colour, [101, 154, 173], 50) == True and 
+        elif (isCloseColor(colour, [0xf9, 0x61, 0xc6], 50) == True and 
               firstWhite == True):
             bound2 = w
             break
@@ -209,7 +209,7 @@ def findVerticalWhiteBounds(pic, y0, y1, w):
                 
         #finding location of next coloured pixel which indicates end of 
         #white segment
-        elif (isCloseColor(colour, [101, 154, 173], 50) == True and 
+        elif (isCloseColor(colour, [0xf9, 0x61, 0xc6], 50) == True and 
               firstWhite == True):
             bound2 = h
             break
