@@ -11,9 +11,9 @@ import ImageWriter
 #checks whether difference in the values of two given rgb colour lists 
 #are within the given threshold
 def isCloseColor(rgb, expected, thr):
-    
+
     #rgb lists always made up of 3 values
-    for i  in range(3):
+    for i in range(3):
         
         #take absolute value as don't know which list has larger value
         if abs(rgb[i] - expected[i]) > thr:
