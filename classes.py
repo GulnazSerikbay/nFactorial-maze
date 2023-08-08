@@ -44,7 +44,7 @@ class Player(pygame.sprite.Sprite):
         super(Player, self).__init__()
         
         #the sprite's game surface is built from the designated image
-        self.surf = pygame.image.load("Sprites/sprite down.png")
+        self.surf = pygame.image.load("Sprites/Walk down.png")
         
         #height and width taken according to image's 
         #rectangular area coverage
@@ -84,9 +84,11 @@ class Player(pygame.sprite.Sprite):
         
         yBottom = self.y + self.height
         
+
         #check if resulting position is within screen bounds:
         if 0 <= (self.x + dx) and (xBottom + dx) <= app.width:
             self.x += dx
+        
             
         if 0 <= (self.y + dy) and (yBottom + dy) <= app.height:
             self.y += dy
@@ -115,10 +117,10 @@ class Player(pygame.sprite.Sprite):
         
         #toggles between images
         if app.walk == True:
-            self.surf = pygame.image.load(f"Sprites/Walk {direction} 1.png")
+            self.surf = pygame.image.load(f"Sprites/Walk {direction}1.png")
             
         elif app.walk == False:
-            self.surf = pygame.image.load(f"Sprites/Walk {direction} 2.png")
+            self.surf = pygame.image.load(f"Sprites/Walk {direction}2.png")
             
     #changeDirection loads the up an image with the sprite facing in a 
     #particular direction depending on the direction indicated
@@ -126,26 +128,26 @@ class Player(pygame.sprite.Sprite):
         
         if direction == "Up":
             #load new image
-            self.surf = pygame.image.load("Sprites/sprite up.png")
+            self.surf = pygame.image.load("Sprites/Walk up.png")
             
             #set new height and width according to image
             self.width = self.surf.get_rect()[-2]
             self.height = self.surf.get_rect()[-1]
         
         elif direction == "Down":
-            self.surf = pygame.image.load("Sprites/sprite down.png")
+            self.surf = pygame.image.load("Sprites/Walk down.png")
             
             self.width = self.surf.get_rect()[-2]
             self.height = self.surf.get_rect()[-1]
             
         elif direction == "Right":
-            self.surf = pygame.image.load("Sprites/sprite right.png")
+            self.surf = pygame.image.load("Sprites/Walk right.png")
             
             self.width = self.surf.get_rect()[-2]
             self.height = self.surf.get_rect()[-1]
             
         elif direction == "Left":
-            self.surf = pygame.image.load("Sprites/sprite left.png")
+            self.surf = pygame.image.load("Sprites/Walk left.png")
             
             self.width = self.surf.get_rect()[-2]
             self.height = self.surf.get_rect()[-1]
