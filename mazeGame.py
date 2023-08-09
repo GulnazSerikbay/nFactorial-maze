@@ -13,6 +13,8 @@ import ImageWriter
 from classes import Player, Tile, Button
 from makeMaze import maze
 
+PLAYER_MOVING_SPEED = 5
+
 #the class app will be used to store variables that multiple classes and 
 #functions must access
 
@@ -28,72 +30,41 @@ class App(object):
 
 #processes key events to move sprite with arrow keys, a helper function
 #to condense keyPressed
-def arrowKeys(event, app):
+def arrowKeys(pressed_keys, app):
     #storing arrow keys' values for ease of access later
-    keys = {"Up": 1073741906, "Down": 1073741905, "Right": 1073741903, 
-            "Left": 1073741904}
-    
+    # keys = {"Up": 1073741906, "Down": 1073741905, "Right": 1073741903, 
+    #         "Left": 1073741904}
+
     #changing player sprite's y coordinate according to arrow key presses
     #and loading correct directional image
-    if event.key == keys["Down"]:
-        
-        #toggling walk checking variable to move back and forth between
-        #walking images for animation
-        app.walk = not(app.walk)
-        
-        move = app.player.makeMove(0, 50, app)
-        
-        #running walking animation in correct direction
-        app.player.walk(app, "Down")
-        
-        #storing direction to load correct image when stopped
-        app.stop = "Down"
-        
-        #try scrolling if successfully moved 
-        if move == True:
+    if pressed_keys[pygame.K_DOWN]:
+        if makePlayerMove(app, 0, PLAYER_MOVING_SPEED, "Down"):
             app.tile.scrollDown(app, app.scroll)
-    
-    elif event.key == keys["Up"]:
-        app.walk = not(app.walk)
-        
-        move = app.player.makeMove(0, -50, app)
-        
-        app.player.walk(app, "Up")
-        app.stop = "Up"
-        
-        if move == True:
+    elif pressed_keys[pygame.K_UP]:
+        if makePlayerMove(app, 0, -PLAYER_MOVING_SPEED, "Up"):
             app.tile.scrollUp(app, app.scroll)
-        
-    #changing player sprite's x coordinate according to arrow key presses
-    #and loading correct directional image
-    elif event.key == keys["Right"]:
-        
-        #toggling walk checking variable to move back and forth between
-        #walking images for animation
-        app.walk = not(app.walk)
-        
-        move = app.player.makeMove(50, 0, app)
-        
-        #running walking animation in correct direction
-        app.player.walk(app, "Right")
-        
-        #storing direction to load correct image when stopped
-        app.stop = "Right"
-        
-        #try scrolling if successfully moved 
-        if move == True:
+    elif pressed_keys[pygame.K_RIGHT]:
+        if makePlayerMove(app, PLAYER_MOVING_SPEED, 0, "Right"):
             app.tile.scrollRight(app, app.scroll)
-        
-    elif event.key == keys["Left"]:
-        app.walk = not(app.walk)
-        
-        move = app.player.makeMove(-50, 0, app)
-        
-        app.player.walk(app, "Left")
-        app.stop = "Left"
-        
-        if move == True:
+    elif pressed_keys[pygame.K_LEFT]:
+        if makePlayerMove(app, -PLAYER_MOVING_SPEED, 0, "Left"):
             app.tile.scrollLeft(app, app.scroll)
+
+
+def makePlayerMove(app, dx, dy, direction):
+    #toggling walk checking variable to move back and forth between
+    #walking images for animation
+    app.walk = not app.walk
+
+    result = app.player.makeMove(dx, dy, app)
+
+    #running walking animation in correct direction
+    app.player.walk(app, direction)
+
+    #storing direction to load correct image when stopped
+    app.stop = direction
+
+    return result
         
         
 #keyPressed handles the game's reaction to a user's key presses
@@ -107,7 +78,7 @@ def arrowKeys(event, app):
 def keyPressed(event, app):
     
     #process arrow keys
-    arrowKeys(event, app)
+    # arrowKeys(event, app)
     
     #toggle map view with v key
     if event.key == ord("v"):
@@ -151,12 +122,14 @@ def mousePressed(event, app):
         #playing any level generates maze for that level again and shifts
         #to loading screen
         if app.playAgain1.onClick(x, y) == True:
+            app.counterValue, app.counterText = 35, '35'.rjust(3)
             app.lvl = 2
             
             loadScreen(app)
             appStarted(app)
         
         if app.playAgain2.onClick(x, y) == True:
+            app.counterValue, app.counterText = 35, '35'.rjust(3)
             app.lvl = 1
             
             loadScreen(app)
@@ -171,6 +144,9 @@ def mousePressed(event, app):
 ############ intialising game window ############
 pygame.init()
 
+pygame.time.set_timer(pygame.USEREVENT, 1000)
+font = pygame.font.SysFont('Consolas', 30)
+
 #setting screen width and height
 width = 624
 height = 624
@@ -181,7 +157,7 @@ app.gameOver = False
 
 #creating game screen and timer
 app.clock = pygame.time.Clock()
-
+app.counterValue, app.counterText = 35, '35'.rjust(3)
 app.screen = pygame.display.set_mode((app.width, app.height))
 
     
@@ -252,8 +228,8 @@ def appStarted(app):
     app.menuQuit = True
 
 #draws the game complete screen 
-def makeOverScreen(app):
-    if app.gameOver == False:
+def makeOverScreen(app, lostGame):
+    if not app.gameOver:
         
         #only play game complete sound once, when app.gameOver is initially
         #False
@@ -263,11 +239,11 @@ def makeOverScreen(app):
     app.gameOver = True
     
     #loading game complete background
-    over = pygame.image.load("screens/game over.PNG")
+    over = pygame.image.load("screens/game over.PNG") if not lostGame else pygame.image.load("screens/time is over.PNG")
     
     #making buttons to allow replay
-    app.playAgain1 = Button(212, 270, "screens/play 1.png")
-    app.playAgain2 = Button(212, 370, "screens/play 2.png")
+    app.playAgain1 = Button(300, 270, "screens/play 1.png")
+    app.playAgain2 = Button(300, 370, "screens/play 2.png")
     
     #making home screen button
     app.home = Button(10, app.height - 80, "screens/home.png")
@@ -314,22 +290,27 @@ def mainGame(app):
     #initialising necessary variables
     appStarted(app)
     
-    while app.runGame == True:
+    while app.runGame:
         
         #applying floor and walls to screen
         app.screen.blit(app.floor, (0, 0))
         app.tile.drawTile(app)
-                
+        app.screen.blit(font.render(app.counterText, True, (255, 255, 255)), (500, 48))
+
         #when player's sprite meets exit bound requirement, game is over
-        if app.player.mazeWon(app.exitBounds, app.loc) == True:
-            
-            makeOverScreen(app)
-            
+        if app.player.mazeWon(app.exitBounds, app.loc) or app.counterValue <= 0:
+            makeOverScreen(app, app.counterValue <= 0)
         else:
             #rendering player sprite onto screen 
             app.screen.blit(app.player.surf, (app.player.x, app.player.y))
-        
+
+        arrowKeys(pygame.key.get_pressed(), app)
+
         for event in pygame.event.get():
+
+            if not app.player.mazeWon(app.exitBounds, app.loc) and event.type == pygame.USEREVENT: 
+                app.counterValue -= 1
+                app.counterText = str(app.counterValue).rjust(3)
             
             #accounting for window close attempts
             if event.type == pygame.QUIT:
@@ -350,22 +331,21 @@ def mainGame(app):
         
         #only checking for view drawing if game not complete, to prevent
         #view from drawing on game complete screen
-        if (app.player.mazeWon(app.exitBounds, app.loc) == False and
-            app.runGame == True):
-            
+        if not app.player.mazeWon(app.exitBounds, app.loc) and app.counterValue > 0 and app.runGame:
             #drawing at end so sprite can go under it
-            if app.view == True:
+            if app.view:
                 drawView(app)
                 
         #updating screen
         pygame.display.flip()
+        app.clock.tick(60)
     
 #draws menu screen of game
 def makeMenu(app):
     
     #loading play buttons for both levels
-    app.play1 = Button(212, 270, "screens/play 1.png")
-    app.play2 = Button(212, 370, "screens/play 2.png")
+    app.play1 = Button(300, 270, "screens/play 1.png")
+    app.play2 = Button(300, 370, "screens/play 2.png")
     
     #loading menu background
     menu = pygame.image.load("screens/menu.PNG")

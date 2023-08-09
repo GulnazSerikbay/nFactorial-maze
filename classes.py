@@ -29,7 +29,7 @@ def touchingWall(rect, app):
             currentColour = app.screen.get_at((w, h))
             
             #only detecting collisions with actual wall colour, not shadows
-            if isCloseColor(currentColour, [101, 154, 173], 30) == True:
+            if isCloseColor(currentColour, [0xf9, 0x61, 0xc6], 30) == True:
                 return True
             
     return False
@@ -86,11 +86,11 @@ class Player(pygame.sprite.Sprite):
         
 
         #check if resulting position is within screen bounds:
-        if 0 <= (self.x + dx) and (xBottom + dx) <= app.width:
+        if 0 < (self.x + dx) and (xBottom + dx) < app.width:
             self.x += dx
         
             
-        if 0 <= (self.y + dy) and (yBottom + dy) <= app.height:
+        if 0 < (self.y + dy) and (yBottom + dy) < app.height:
             self.y += dy
         
         #check for wall collisions on new position, if colliding, 
@@ -176,7 +176,7 @@ class Player(pygame.sprite.Sprite):
         
         #if no exit bound met, maze is not complete
         return False
-    
+
 #a class for tracking the maze tile being shown to be used when scrolling 
 #view is implemented later
 class Tile(object):
@@ -203,7 +203,7 @@ class Tile(object):
     def scrollUp(self, app, dy):
         
         #only scroll when player is at 2/3 of tile
-        if app.player.y <= 50:
+        if app.player.y <= 5:
             
             #if at top edge, shouldn't scroll
             if self.y > 0:
@@ -227,7 +227,7 @@ class Tile(object):
         picH = ImageWriter.getHeight(app.maze)
         
         #only scroll when player is at 1/3 of tile
-        if (app.player.y + app.player.height) >= (app.height - 50):
+        if (app.player.y + app.player.height) >= (app.height - 5):
             
             #if at bottom edge, shouldn't scroll
             if self.y < picH:
@@ -254,7 +254,7 @@ class Tile(object):
     def scrollLeft(self, app, dx):
          
         #only scroll when player is at 1/3 of tile
-        if app.player.x <= 50:
+        if app.player.x <= 5:
             
             #if at left edge, shouldn't scroll
             if self.x > 0:
@@ -277,7 +277,7 @@ class Tile(object):
         picW = ImageWriter.getWidth(app.maze)
         
         #only scroll when player is at 2/3 of tile
-        if (app.player.x + app.player.width) >= (app.width - 50):
+        if (app.player.x + app.player.width) >= (app.width - 5):
             
             #if at right edge, shouldn't scroll
             if self.x < picW:
