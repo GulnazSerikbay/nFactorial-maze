@@ -176,7 +176,7 @@ class Player(pygame.sprite.Sprite):
         
         #if no exit bound met, maze is not complete
         return False
-    
+
 #a class for tracking the maze tile being shown to be used when scrolling 
 #view is implemented later
 class Tile(object):
