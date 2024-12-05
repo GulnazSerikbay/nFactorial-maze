@@ -20,7 +20,3 @@ Shortcuts: While there are no explicit shortcuts programmed into the game, when 
 
 
 
-
-
-# notes: Arman, Satbayev dean characters
-# TODO: finish in 30-40 (?) sec
